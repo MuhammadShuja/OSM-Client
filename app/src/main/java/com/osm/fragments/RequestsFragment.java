@@ -1,0 +1,131 @@
+
+package com.osm.fragments;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.osm.API.APIResponse;
+import com.osm.API.OSM;
+import com.osm.R;
+import com.osm.activities.ChatActivity;
+import com.osm.adapters.FriendsAdapter;
+import com.osm.adapters.RequestsAdapter;
+import com.osm.models.RequestModel;
+import com.osm.models.UserModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class RequestsFragment extends Fragment {
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private String mParam1;
+    private String mParam2;
+
+    private ListView lvRequests;
+    private RequestsAdapter adapter;
+    private List<RequestModel> requests;
+
+    private OnFragmentInteractionListener mListener;
+
+    public RequestsFragment() {
+        // Required empty public constructor
+    }
+
+    public static RequestsFragment newInstance(String param1, String param2) {
+        RequestsFragment fragment = new RequestsFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_requests, container, false);
+        getActivity().setTitle("Friend Requests");
+
+        lvRequests = (ListView) view.findViewById(R.id.lvRequests);
+        adapter = new RequestsAdapter(getContext(), R.layout.layout_request_row, requests = new ArrayList<>());
+        lvRequests.setAdapter(adapter);
+        loadRequests();
+
+        setHasOptionsMenu(true);
+        return view;
+    }
+
+    private void loadRequests(){
+
+        OSM.getInstance(getContext()).getRequests(new APIResponse.FriendRequestListListener() {
+            @Override
+            public void onSuccess(List<RequestModel> requests) {
+                adapter = new RequestsAdapter(getContext(), R.layout.layout_request_row, requests);
+                adapter.setOnUpdateListener(new RequestsAdapter.OnUpdateListener() {
+                    @Override
+                    public void onUpdate() {
+                        loadRequests();
+                    }
+                });
+                lvRequests.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG);
+            }
+        });
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        super.onCreateOptionsMenu(menu, inflater);
+
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+}

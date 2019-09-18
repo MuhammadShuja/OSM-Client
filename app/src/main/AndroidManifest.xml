@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.osm">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".activities.HomeActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.ChatActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+        <activity
+            android:name=".activities.CameraActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.CropActivity"
+            android:label="Crop Image"
+            android:parentActivityName=".activities.AdjustActivity" />
+        <activity
+            android:name=".activities.BackgroundActivity"
+            android:label="Select Background"
+            android:parentActivityName=".activities.CropActivity" />
+        <activity
+            android:name=".activities.AdjustActivity"
+            android:label="Adjust Image"
+            android:parentActivityName=".activities.ChatActivity" />
+        <activity
+            android:name=".activities.AuthActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.AddFriendActivity"
+            android:parentActivityName=".activities.HomeActivity" />
+        <activity android:name=".activities.RequestMergerActivity" />
+        <activity android:name=".activities.BackgroundChooserActivity" />
+        <activity android:name=".activities.MergerResponseActivity" />
+        <activity
+            android:name=".activities.ResponseCameraActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.ResponseAdjustActivity" />
+        <activity android:name=".activities.ResponseCropActivity" />
+        <activity android:name=".activities.MergerViewActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+    </application>
+
+</manifest>
